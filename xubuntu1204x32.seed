@@ -2,12 +2,6 @@
 
 
 
-### Information on preseeding Ubuntu 12.04
-#https://help.ubuntu.com/12.04/installation-guide/i386/appendix-preseed.html
-#https://help.ubuntu.com/12.04/installation-guide/example-preseed.txt
-
-
-
 ### PXEBoot Entry
 #LABEL -
 #       MENU LABEL Install ^XUbuntu v12.04 32-Bit
@@ -38,6 +32,10 @@ d-i netcfg/get_hostname string freegeekchicago
 ### Mirror settings
 d-i mirror/http/mirror select CC.archive.ubuntu.com
 
+
+#Settings above are not available for preseed with netboot
+############################################################
+#Settings below are available for preseed with netboot
 
 
 ### Clock and time zone setup
