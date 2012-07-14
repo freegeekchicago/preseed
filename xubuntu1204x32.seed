@@ -1,0 +1,121 @@
+#### Preconfiguration File for XUbuntu 12.04
+
+
+
+### Information on preseeding Ubuntu 12.04
+#https://help.ubuntu.com/12.04/installation-guide/i386/appendix-preseed.html
+#https://help.ubuntu.com/12.04/installation-guide/example-preseed.txt
+
+
+
+### PXEBoot Entry
+#LABEL -
+#       MENU LABEL Install ^XUbuntu v12.04 32-Bit
+#       MENU INDENT 4
+#       KERNEL /ubuntu1204x86/linux
+#	APPEND initrd=/ubuntu1204x86/initrd.gz url=http://192.168.100.21/preseed/xubuntu1204x32.seed locale=en_US preseed/locale=en_US keyboard-configuration/layoutcode=us console-setup/layoutcode=en netcfg/get_hostname=install netcfg/get_domain= --
+
+
+
+### Localization
+# Preseeding only locale sets language, country and locale.
+d-i debian-installer/locale string en_US
+
+# Keyboard selection
+# Disable automatic (interactive) keymap detection
+d-i console-setup/ask_detect boolean false
+d-i keyboard-configuration/layoutcode string us
+
+
+
+### Network configuration
+
+d-i netcfg/get_hostname string freegeekchicago
+*d-i netcfg/get_domain string unassigned-domain
+
+
+
+### Mirror settings
+d-i mirror/http/mirror select CC.archive.ubuntu.com
+
+
+
+### Clock and time zone setup
+# Controls whether or not the hardware clock is set to UTC.
+d-i clock-setup/utc boolean true
+
+# You may set this to any valid setting for $TZ; see the contents of
+# /usr/share/zoneinfo/ for valid values.
+d-i time/zone string US/Central
+
+# Controls whether to use NTP to set the clock during the install
+d-i clock-setup/ntp boolean true
+
+
+
+### Account setup
+# To create a normal user account.
+d-i passwd/user-fullname string user
+d-i passwd/username string user
+
+# Normal user's password, either in clear text
+d-i passwd/user-password password password
+d-i passwd/user-password-again password password
+
+# The installer will warn about weak passwords. If you are sure you know
+# what you're doing and want to override it, uncomment this.
+#d-i user-setup/allow-password-weak boolean true
+
+# Set to true if you want to encrypt the first user's home directory.
+d-i user-setup/encrypt-home boolean false
+
+
+
+### Partitioning
+d-i partman-auto/method string regular
+d-i partman-auto/init_automatically_partition select biggest_free
+
+# You can choose one of the three predefined partitioning recipes:
+# - atomic: all files in one partition
+# - home:   separate /home partition
+# - multi:  separate /home, /usr, /var, and /tmp partitions
+d-i partman-auto/choose_recipe select atomic
+
+d-i partman/default_filesystem string ext4
+
+# This makes partman automatically partition without confirmation, provided
+# that you told it what to do using one of the methods above.
+d-i partman/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+
+
+
+### Package selection
+tasksel tasksel/first multiselect xubuntu-desktop
+
+##Maybe replace parts of our install.txt
+# Individual additional packages to install
+#d-i pkgsel/include string
+# Whether to upgrade packages after debootstrap.
+# Allowed values: none, safe-upgrade, full-upgrade
+#d-i pkgsel/upgrade select none
+
+# Policy for applying updates. May be "none" (no automatic updates),
+# "unattended-upgrades" (install security updates automatically), or
+# "landscape" (manage system with Landscape).
+d-i pkgsel/update-policy select unattended-upgrades
+
+
+
+### Boot loader installation
+# Grub is the default boot loader (for x86).
+d-i grub-installer/only_debian boolean true
+
+
+
+### Finishing up the installation
+# Avoid that last message about the install being complete.
+d-i finish-install/reboot_in_progress note
+
+
