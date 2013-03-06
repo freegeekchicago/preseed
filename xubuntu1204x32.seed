@@ -7,7 +7,7 @@
 #       MENU LABEL Install ^XUbuntu v12.04 32-Bit
 #       MENU INDENT 4
 #       KERNEL /ubuntu1204x86/linux
-# APPEND initrd=/ubuntu1204x64/initrd.gz auto=true priority=critical interface=eth0 url=http://192.168.100.21/preseed/xubuntu1204x32.seed --
+#       APPEND initrd=/ubuntu1204x86/initrd.gz auto=true priority=critical interface=eth0 netcfg/get_hostname=freegeekchicago url=http://192.168.100.21/preseed/xubuntu1204x32.seed
 
 
 
@@ -25,7 +25,8 @@ d-i keyboard-configuration/layoutcode string us
 ### Network configuration
 
 d-i netcfg/get_hostname string freegeekchicago
-*d-i netcfg/get_domain string unassigned-domain
+#Bug in d-i seems to keep the hostname value from getting set properly. Must be set in PXEBoot entry with netcfg/get_hostname=freegeekchicago
+d-i netcfg/get_domain string unassigned-domain
 
 
 
