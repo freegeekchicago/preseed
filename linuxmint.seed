@@ -1,0 +1,89 @@
+#Preseed file created by Philip Lengyel
+#Intended for use at FreeGeek Chicago Build Area
+#This installs mint in OEM mode as well as the FGC install script
+#These values were created by analysing the log files of the installer and debconf-utils
+#If other values need preseeding, install debconf-utils and use debconf-get-selections to find values
+
+
+#Set language and keyboard to English
+#Some of these might be unneccessary I'll update it in the future
+d-i localchooser/languagelist select en
+d-i debconf/language string en
+d-i localechooser/shortlist select US
+d-i localechooser/preferred-locale string en_US.UTF-8
+d-i console-setup/ask_detect boolean false
+d-i debian-installer/locale string en_US.UTF-8
+
+#OEM id I'll just leave this blank
+d-i oem-config/id string
+
+#d-i debian-installer/language string en
+#d-i debian-installer/country string US
+
+d-i keyboard-configuration/layout select English (US)
+d-i keyboard-configuration/variant select English (US)
+d-i keyboard-configuration/keyboardcode select English (US)
+d-i keyboard-configuration/xkb-keymap select us
+d-i keyboard-configuration/toggle select No toggling
+d-i keyboard-configuration/layoutcode string us
+
+#Use third party
+#Not sure if both are needed
+d-i ubiquity/use_nonfree boolean true
+d-i apt-setup/extras boolean true
+
+#Create an automatic partition
+#Not sure how this would work with two hard drives
+#Not a problem at FGC though because most if not all systems are single hard drive
+d-i partman-auto/disk string /dev/sda
+d-i partman-auto/method string regular
+d-i partman-lvm/device_remove_lvm boolean true
+d-i partman-lvm/device_remove_md boolean true
+d-i partman-lvm/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+d-i partman-auto/choose_recipe select atomic
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+
+#Grub Bootloader
+d-i grub-installer/only_debian boolean true
+d-i grub-installer/with_other_os boolean true
+d-i grub-installer/bootdev string /dev/sda
+
+
+#Time zone Chicago
+ubiquity time/zone select Americas/Chicago
+
+d-i ubiquity/download_updates boolean true
+
+#Login
+#Default password is password
+d-i passwd/user-fullname string oem
+d-i passwd/username string oem
+d-i passwd/user-password password password
+d-i passwd/user-password-again password password
+d-i user-setup/allow-password-weak boolean true
+d-i passwd/auto-login boolean true
+
+#Any extra packages to include
+d-i pkgsel/include string oem-config oem-config-gtk ruby debconf-utils
+
+#Preseed install script
+ubiquity  ubiquity/success_command string \
+#tinyurl might need to be updated in the future
+wget https://tinyurl.com/yynxx6bs -O /target/home/oem/install.txt; \
+cp /etc/resolv.conf /target/etc/resolv.conf; \
+chroot /target sh /home/oem/install.txt; \
+chroot /target apt update; \
+chroot /target apt full-upgrade
+
+#Preseed questions asked in the install script
+#I think these might be required so that the install script does not stall on user selected options (keyboard and libssl)
+#These values can be found with debconf-utils
+keyboard-configuration keyboard-configuration/layout select English (US)
+keyboard-configuration keyboard-configuration/layoutcode string us
+keyboard-configuration keyboard-configuration/variant select English (US)
+libssl1.1 libraries/restart-without-asking boolean true
+libssl1.1:amd64 libraries/restart-without-asking boolean true
